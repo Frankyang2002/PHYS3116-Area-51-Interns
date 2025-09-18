@@ -1,0 +1,25 @@
+name: Notify Discord
+on:
+  push:
+    branches: [ main ]   # change if your default is 'master'
+  pull_request:
+    types: [opened, closed, reopened, ready_for_review]
+  workflow_dispatch:      # allows manual runs
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build message
+        id: msg
+        run: |
+          EVENT="${{ github.event_name }}"
+          ACTOR="${{ github.actor }}"
+          REPO="${{ github.repository }}"
+          REF="${{ github.ref }}"
+          URL="${{ github.event.pull_request.html_url || github.event.head_commit.url || github.server_url }}/${REPO}"
+          echo "payload={\"embeds\":[{\"title\":\"${EVENT} in ${REPO}\",\"description\":\"by **${ACTOR}** on \`${REF}\`\",\"url\":\"${URL}\"}]}" >> $GITHUB_OUTPUT
+      - name: Send to Discord
+        run: |
+          curl -sS -H "Content-Type: application/json" \
+            -d '${{ steps.msg.outputs.payload }}' \
+            "${{ secrets.DISCORD_WEBHOOK }}"
