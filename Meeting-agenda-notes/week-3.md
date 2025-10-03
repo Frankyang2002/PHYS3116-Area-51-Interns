@@ -1,6 +1,6 @@
 Please note this is a a guide/template which you do not need to use.
 
-| Meeting 1 |  |
+| Meeting 2 |  |
 |-----------|--|
 | Date/time | 02/10/2025 |
 | Week | 3 |
